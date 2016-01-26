@@ -5,6 +5,8 @@
 
 <h1>Your Pragmatic Catalog</h1>
 
+<h2><%= pluralize(@count, 'access') if session[:counter] > 5 %></h2>
+
 <% cache ['store', Product.latest] do %>
   <% @products.each do |product| %>
     <% cache ['entry', product] do %>
