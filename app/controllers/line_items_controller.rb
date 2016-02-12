@@ -1,6 +1,6 @@
 class LineItemsController < ApplicationController
   include CurrentCart
-  before_action :set_cart, only: [:create]
+  before_action :set_cart, only: [:create, :destroy]
   before_action :set_line_item, only: [:show, :edit, :update, :destroy]
 
   # GET /line_items
@@ -62,11 +62,16 @@ class LineItemsController < ApplicationController
     if @line_item.quantity > 1
        @line_item.quantity -= 1
        @line_item.save
-       redirect_to @line_item.cart
+
+     respond_to do |format|
+         format.html { redirect_to store_url }
+         format.js { @current_item = @line_item }
+       end
     else
       @line_item.destroy
       respond_to do |format|
         format.html { redirect_to store_url }
+        format.js { @current_item = @line_item }
         format.json { head :no_content }
       end
     end
