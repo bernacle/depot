@@ -27,12 +27,13 @@ class LineItemsController < ApplicationController
   # POST /line_items.json
   def create
     product = Product.find(params[:product_id]) # product_id was the parameter defined on the button_to tag on index
-    @line_item = @cart.line_items.build(product: product) # @cart was defined on CurrentCart module
+    @line_item = @cart.add_product(product.id, product.price) # @cart was defined on CurrentCart module
 
     respond_to do |format|
       if @line_item.save
         session[:counter] = 0
-        format.html { redirect_to @line_item.cart, notice: 'Line item was successfully created.' }
+        format.html { redirect_to store_url}
+        format.js   { @current_item = @line_item }
         format.json { render :show, status: :created, location: @line_item }
       else
         format.html { render :new }
@@ -58,10 +59,16 @@ class LineItemsController < ApplicationController
   # DELETE /line_items/1
   # DELETE /line_items/1.json
   def destroy
-    @line_item.destroy
-    respond_to do |format|
-      format.html { redirect_to line_items_url, notice: 'Line item was successfully destroyed.' }
-      format.json { head :no_content }
+    if @line_item.quantity > 1
+       @line_item.quantity -= 1
+       @line_item.save
+       redirect_to @line_item.cart
+    else
+      @line_item.destroy
+      respond_to do |format|
+        format.html { redirect_to store_url }
+        format.json { head :no_content }
+      end
     end
   end
 
@@ -73,6 +80,6 @@ class LineItemsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def line_item_params
-      params.require(:line_item).permit(:product_id, :cart_id)
+      params.require(:line_item).permit(:product_id)
     end
 end
