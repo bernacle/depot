@@ -1,4 +1,4 @@
-<h2>Your Cart</h2>
+<h2><%= t('.title') %></h2>
 <table>
   <%= render(@cart.line_items) %>
   <!-- render passing a collection, automatically invoke the partial once for each item in the colection -->
@@ -8,8 +8,8 @@
   </tr>
 </table>
 <% unless @order %> <!-- Apenas se não houver uma order, que ele mostra a opção de checkout -->
-  <%= button_to 'Checkout', new_order_path, method: :get %>
-  <%= button_to 'Empty cart', cart, method: :delete, data: {confirm: 'Are you sure?'} %>
+  <%= button_to t('.checkout'), new_order_path, method: :get %>
+  <%= button_to t('.empty'), cart, method: :delete, data: {confirm: 'Are you sure?'} %>
 
 <% else %>
   <%= button_to 'Cancel Checkout', store_path, method: :get %>
