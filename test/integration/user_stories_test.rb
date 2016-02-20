@@ -54,15 +54,51 @@ class UserStoriesTest < ActionDispatch::IntegrationTest
     assert_equal "Pragmatic Store Order Confirmation", mail.subject
   end
 
-  test "should mail the admin when error occurs" do
-    get "/carts/wibble"
-    assert_response :redirect
-    assert_template "/" #should go to store_url
+  # test "should mail the admin when error occurs" do
+  #   get "/carts/wibble"
+  #   assert_response :redirect
+  #   assert_template "/" #should go to store_url
+  #
+  #   mail = ActionMailer::Base.deliveries.last
+  #   assert_equal ["brunoraphael89@gmail.com"], mail.to
+  #   assert_equal 'Bug Report <report@depot.com>', mail[:from].value
+  #   assert_equal "A error occurred", mail.subject
+  #  end
 
-    mail = ActionMailer::Base.deliveries.last
-    assert_equal ["brunoraphael89@gmail.com"], mail.to
-    assert_equal 'Bug Report <report@depot.com>', mail[:from].value
-    assert_equal "A error occurred", mail.subject
+   test "should fail on access of sensitive data" do
+     # login user
+     user = users(:one)
+     get "/login"
+     assert_response :success
+     post_via_redirect "/login", name: user.name, password: 'secret'
+     assert_response :success
+     assert_equal '/admin', path
+
+     # look at a protected resources
+     get "/carts/12345"
+     assert_response :success
+     assert_equal '/carts/12345', path
+
+     #logout user
+     delete "/logout"
+     assert_response :redirect
+     assert_redirected_to store_url
+
+    #try to look at protected resource again, should be redirected to login page
+    get "/carts/12345"
+    assert_response :redirect
+    follow_redirect!
+    assert_equal '/login', path
+
+
+   end
+
+   test "should logout and not be allowed back" do
+     delete "/logout"
+     assert_redirected_to store_url
+
+     get "/users"
+     assert_redirected_to login_url
    end
 
 
