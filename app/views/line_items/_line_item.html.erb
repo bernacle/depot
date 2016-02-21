@@ -5,6 +5,6 @@
 <% end %>
   <td><%= line_item.quantity %>&times</td>
   <td><%= line_item.product.title %></td>
-  <td class="item-price"><%= number_to_currency(line_item.total_price) %></td>
+  <td class="item-price"><%= number_to_locale(line_item.total_price) %></td>
   <td><%= button_to 'D', line_item, method: :delete, remote: true %></td>
 </tr>

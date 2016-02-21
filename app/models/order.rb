@@ -1,6 +1,7 @@
 class Order < ActiveRecord::Base
   has_many :line_items, dependent: :destroy
   PAYMENTS_TYPES = ["Check", "Credit Card", "Purchase Order"]
+
   validates :name, :address, :email, presence: true
   validates :pay_type, inclusion: PAYMENTS_TYPES
 

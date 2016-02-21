@@ -7,7 +7,7 @@ class StoreController < ApplicationController
     if params[:set_locale]
       redirect_to store_url(locale: params[:set_locale])
     else
-      @products = Product.order(:title)
+      @products = Product.order(:title).where(locale: I18n.locale)
       @count = count
     end
   end

@@ -9,4 +9,9 @@ module ApplicationHelper
     # This code uses the Rails standard helper, content_tag(),
     # which can be used to wrap the output created by a block in a tag
   end
+
+  def number_to_locale(price)
+    price = price * 1.1 if 'es' == I18n.locale.to_s
+    number_to_currency price
+  end
 end

@@ -4,7 +4,7 @@
   <!-- render passing a collection, automatically invoke the partial once for each item in the colection -->
   <tr class="total_line">
     <td colspan="2">Total</td>
-    <td class="total_cell"><%= number_to_currency(cart.total_price)%></td>
+    <td class="total_cell"><%= number_to_locale(cart.total_price)%></td>
   </tr>
 </table>
 <% unless @order %> <!-- Apenas se não houver uma order, que ele mostra a opção de checkout -->
